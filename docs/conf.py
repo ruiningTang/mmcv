@@ -14,8 +14,10 @@
 import os
 import sys
 
+import pytorch_sphinx_theme
 from m2r import MdInclude
 from recommonmark.transform import AutoStructify
+from sphinx.builders.html import StandaloneHTMLBuilder
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -49,9 +51,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'recommonmark',
     'sphinx.ext.autosectionlabel',
-    'sphinx_markdown_tables'
+    'sphinx_markdown_tables',
+    'myst_parser',
+    'sphinx_copybutton',
 ]  # yapf: disable
 
 autodoc_mock_imports = ['mmcv._ext', 'mmcv.utils.ext_loader', 'torchvision']
@@ -91,18 +94,102 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+# html_theme = 'sphinx_rtd_theme'
+html_theme = 'pytorch_sphinx_theme'
+html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
+    'menu': [
+        {
+            'name': 'GitHub',
+            'url': 'https://github.com/open-mmlab/mmcv'
+        },
+        {
+            'name':
+            'Docs',
+            'children': [
+                {
+                    'name': 'MMCV',
+                    'url': 'https://mmcv.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMAction2',
+                    'url': 'https://mmaction2.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMClassification',
+                    'url':
+                    'https://mmclassification.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://mmdetection.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMDetection3D',
+                    'url': 'https://mmdetection3d.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMEditing',
+                    'url': 'https://mmediting.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMGeneration',
+                    'url': 'https://mmgeneration.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMOCR',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMPose',
+                    'url': 'https://mmpose.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMSegmentation',
+                    'url': 'https://mmsegmentation.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMTracking',
+                    'url': 'https://mmtracking.readthedocs.io/en/latest/',
+                },
+            ]
+        },
+        {
+            'name':
+            'OpenMMLab',
+            'children': [
+                {
+                    'name': 'Homepage',
+                    'url': 'https://openmmlab.com/'
+                },
+                {
+                    'name': 'GitHub',
+                    'url': 'https://github.com/open-mmlab/'
+                },
+                {
+                    'name': 'Twitter',
+                    'url': 'https://twitter.com/OpenMMLab'
+                },
+                {
+                    'name': 'Zhihu',
+                    'url': 'https://zhihu.com/people/openmmlab'
+                },
+            ]
+        },
+    ]
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = ['css/readthedocs.css']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -143,7 +230,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'mmcv.tex', 'mmcv Documentation', 'Kai Chen', 'manual'),
+    (master_doc, 'mmcv.tex', 'mmcv Documentation', 'MMCV Contributors',
+     'manual'),
 ]
 
 # -- Options for manual page output ------------------------------------------
@@ -179,7 +267,14 @@ epub_title = project
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
+# set priority when building html
+StandaloneHTMLBuilder.supported_image_types = [
+    'image/svg+xml', 'image/gif', 'image/png', 'image/jpeg'
+]
 # -- Extension configuration -------------------------------------------------
+# Ignore >>> when copying code
+copybutton_prompt_text = r'>>> |\.\.\. '
+copybutton_prompt_is_regexp = True
 
 
 def setup(app):
